@@ -1,5 +1,6 @@
 #include "UserPort.hpp"
 #include "UeGui/IListViewMode.hpp"
+#include "UeGui/ITextMode.hpp"
 
 namespace ue
 {
@@ -21,6 +22,7 @@ void UserPort::stop()
     handler = nullptr;
 }
 
+
 void UserPort::showNotConnected()
 {
     gui.showNotConnected();
@@ -31,10 +33,12 @@ void UserPort::showConnecting()
     gui.showConnecting();
 }
 
+
 common::PhoneNumber UserPort::getPhoneNumber()
 {
     return phoneNumber;
 }
+
 
 IUeGui::ISmsComposeMode& UserPort::initSmsComposer()
 {
@@ -50,6 +54,12 @@ IUeGui::ITextMode& UserPort::initTextMode()
 {
     return gui.setViewTextMode();
 }
+
+IUeGui::IDialMode& UserPort::initDialMode()
+{
+    return gui.setDialMode();
+}
+
 
 void UserPort::setAcceptCallback(const IUeGui::Callback& callback)
 {
@@ -73,9 +83,8 @@ void UserPort::showMainMenu()
     menu.clearSelectionList();
     menu.addSelectionListItem("Compose SMS", "");
     menu.addSelectionListItem("View SMS", "");
+    menu.addSelectionListItem("Dial", "");
 }
-
-
 
 
 void UserPort::showSMSList(const smsContainer&& smsList)
@@ -90,10 +99,6 @@ void UserPort::showSMSList(const smsContainer&& smsList)
     });
 
 }
-
-
-
-
 
 void UserPort::showSMSList(const smsContainer& smsList)
 {
@@ -140,9 +145,44 @@ common::PhoneNumber UserPort::getInputPhoneNumber(IUeGui::ISmsComposeMode& compo
     return composer.getPhoneNumber();
 }
 
+common::PhoneNumber UserPort::getInputPhoneNumber(IUeGui::IDialMode &dial)
+{
+    return  dial.getPhoneNumber();
+}
+
 std::string UserPort::getInputString(IUeGui::ISmsComposeMode& composer)
 {
     return composer.getSmsText();
+}
+
+
+void UserPort::showNewCallRequest(common::PhoneNumber from) {
+    IUeGui::ITextMode& incomingCall = gui.setAlertMode();
+    incomingCall.setText("Incoming call from " + to_string(from));
+}
+
+void UserPort::showTalking()
+{
+    IUeGui::ICallMode& call = gui.setCallMode();
+
+}
+
+void UserPort::showDialing(common::PhoneNumber to)
+{
+    IUeGui::ITextMode& dialing = gui.setAlertMode();
+    dialing.setText("Dialling to " + to_string(to) + "...");
+}
+
+void UserPort::showPartnerNotAvailable()
+{
+    IUeGui::ITextMode& info = gui.setAlertMode();
+    info.setText("Number is not available");
+}
+
+void UserPort::showCallDropped()
+{
+    IUeGui::ITextMode& info = gui.setAlertMode();
+    info.setText("Call rejected");
 }
 
 }
