@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Messages/PhoneNumber.hpp"
-#include "ITextMessege.hpp"
 
 namespace
 {
@@ -10,7 +9,15 @@ namespace
 
 namespace ue{
 
-class SMS : public ITextMessage
+enum SmsTransmissionState
+{
+    initial,
+    Send,
+    Received,
+    Bounce
+};
+
+class SMS
 {
 public:
     SMS();
@@ -18,14 +25,14 @@ public:
     SMS(const SMS &sms);
     SMS &operator =(const SMS &sms);
 
-    std::string getMessageSummary() override;
-    std::string getMessage() override;
-    common::PhoneNumber getFromNumber() override;
-    common::PhoneNumber getToNumber() override;
-    void setSMSTransmissionState(SmsTransmissionState state) override;
-    SmsTransmissionState getSMSTransmissionState() override;
-    void setIsReadStatus(bool status) override;
-    bool getIsReadStatus() override;
+    std::string getMessageSummary();
+    std::string getMessage();
+    common::PhoneNumber getFromNumber();
+    common::PhoneNumber getToNumber();
+    void setSMSTransmissionState(SmsTransmissionState state);
+    SmsTransmissionState getSMSTransmissionState();
+    void setIsReadStatus(bool status);
+    bool getIsReadStatus();
 
 private:
     std::string message;

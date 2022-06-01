@@ -106,14 +106,14 @@ void UserPort::showSMSList(const smsContainer& smsList)
     IUeGui::IListViewMode& menu = gui.setListViewMode();
     menu.clearSelectionList();
 
-    std::for_each(smsList.begin(), smsList.end(), [&menu](auto& sms)
+    std::for_each(smsList.begin(), smsList.end(), [this,&menu](auto& sms)
     {
-        menu.addSelectionListItem(sms.second->getMessageSummary(),"");
+        menu.addSelectionListItem(constructSmsSummary(*(sms.second)),"");
     });
 
 }
 
-void UserPort::showSMS(ITextMessage &sms)
+void UserPort::showSMS(SMS &sms)
 {
     IUeGui::ITextMode& smsView = gui.setViewTextMode();
     std::string header;
@@ -129,9 +129,46 @@ void UserPort::showSMS(ITextMessage &sms)
     sms.setIsReadStatus(true);
 }
 
-void UserPort::showSMS(ITextMessage &&sms)
+void UserPort::showSMS(SMS &&sms)
 {
     showSMS(sms);
+}
+
+std::basic_string<char> UserPort::constructSmsSummary(SMS &sms) const
+{
+    std::basic_string message(sms.getMessage());
+    uint8_t pos = message.find_first_of('\n');
+    if( pos > MAX_SUMMARY_SIZE ) pos = MAX_SUMMARY_SIZE;
+
+    switch(sms.getSMSTransmissionState())
+    {
+        case Bounce:
+        {
+            return "SEND ERR: " + message.substr(0, pos - 10);
+        }
+        case Received:
+        {
+            if (sms.getIsReadStatus())
+                return message.substr(0, pos);
+            else
+                return "*" + message.substr(0, pos - 1);
+        }
+        case Send:
+        {
+            return message.substr(0, pos);
+        }
+        case initial:
+        {
+            if (sms.getIsReadStatus())
+                return message.substr(0, pos);
+            else
+                return "*" + message.substr(0, pos - 1);
+        }
+        default:
+        {
+            return "unhandled-case";
+        }
+    }
 }
 
 void UserPort::showSMSNotification()

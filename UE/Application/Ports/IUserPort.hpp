@@ -4,7 +4,9 @@
 #include "Messages/PhoneNumber.hpp"
 #include "IUeGui.hpp"
 #include "SMSDB/ISMSDatabase.hpp"
-#include "SMSDB/ITextMessege.hpp"
+
+#include "SMSDB/SMS.hpp"
+
 #include "Constants/MenuConstans.h"
 #include "IUeGui.hpp"
 #include "UeGui/IDialMode.hpp"
@@ -24,7 +26,7 @@ public:
 class IUserPort
 {
 public:
-    typedef const std::vector<std::pair<unsigned int, std::shared_ptr<ITextMessage>>> smsContainer;
+    typedef const std::vector<std::pair<unsigned int, std::shared_ptr<SMS>>> smsContainer;
 
     virtual ~IUserPort() = default;
 
@@ -37,8 +39,8 @@ public:
 
     virtual void showSMSList(const smsContainer&& smsList) = 0;
     virtual void showSMSList(const smsContainer& smsList) = 0;
-    virtual void showSMS(ITextMessage& sms) = 0;
-    virtual void showSMS(ITextMessage&& sms) = 0;
+    virtual void showSMS(SMS& sms) = 0;
+    virtual void showSMS(SMS&& sms) = 0;
     virtual void showSMSNotification() = 0;
 
     virtual IUeGui::ISmsComposeMode& initSmsComposer() = 0;

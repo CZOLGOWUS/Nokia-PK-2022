@@ -16,28 +16,28 @@ namespace ue
                 );
     }
 
-    void BasicSMSDatabase::addSMS(ITextMessage& sms)
+    void BasicSMSDatabase::addSMS(SMS& sms)
     {
         data.emplace_back(
                 nextId++, std::make_unique<SMS>(sms.getFromNumber(),sms.getToNumber(),sms.getMessage(),sms.getIsReadStatus(),sms.getSMSTransmissionState())
         );
     }
 
-    ITextMessage& BasicSMSDatabase::getSMS(unsigned int id)
+    SMS& BasicSMSDatabase::getSMS(unsigned int id)
     {
         return *data.at(id).second;
     }
 
-    const std::vector<std::pair<unsigned int, std::shared_ptr< ITextMessage>>>& BasicSMSDatabase::getAllSMS()
+    const std::vector<std::pair<unsigned int, std::shared_ptr< SMS>>>& BasicSMSDatabase::getAllSMS()
     {
         return data;
     }
 
-    std::optional<std::shared_ptr<ITextMessage>> BasicSMSDatabase::getLastSMSSend()
+    std::optional<std::shared_ptr<SMS>> BasicSMSDatabase::getLastSMSSend()
     {
         for (size_t i = data.size() - 1; i > 0; --i)
         {
-            std::shared_ptr< ITextMessage>& sms = data[i].second;
+            std::shared_ptr< SMS>& sms = data[i].second;
             if(sms->getSMSTransmissionState() == Send)
                 return sms;
         }
