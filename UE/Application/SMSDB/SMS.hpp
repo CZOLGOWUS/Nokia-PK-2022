@@ -25,7 +25,6 @@ public:
     SMS(const SMS &sms);
     SMS &operator =(const SMS &sms);
 
-    std::string getMessageSummary();
     std::string getMessage();
     common::PhoneNumber getFromNumber();
     common::PhoneNumber getToNumber();

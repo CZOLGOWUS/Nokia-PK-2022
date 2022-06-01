@@ -43,41 +43,6 @@ namespace ue
         return *this;
     }
 
-    std::string SMS::getMessageSummary()
-    {
-        int pos = message.find_first_of("\n");
-        if(pos==-1 || pos>MAX_SUMMARY_SIZE) pos = MAX_SUMMARY_SIZE;
-
-        switch(smsTransmissionState)
-        {
-            case Bounce:
-            {
-                return "SEND ERR: " + message.substr(0, pos - 10);
-            }
-            case Received:
-            {
-                if (isRead)
-                    return message.substr(0, pos);
-                else
-                    return "*" + message.substr(0, pos - 1);
-            }
-            case Send:
-            {
-                return message.substr(0, pos);
-            }
-            case initial:
-            {
-                if (isRead)
-                    return message.substr(0, pos);
-                else
-                    return "*" + message.substr(0, pos - 1);
-            }
-            default:
-            {
-                return "unhandled-case";
-            }
-        }
-    }
 
     std::string SMS::getMessage()
     {

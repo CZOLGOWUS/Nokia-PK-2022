@@ -93,9 +93,9 @@ void UserPort::showSMSList(const smsContainer&& smsList)
     IUeGui::IListViewMode& menu = gui.setListViewMode();
     menu.clearSelectionList();
 
-    std::for_each(smsList.begin(), smsList.end(), [&menu](auto& sms)
+    std::for_each(smsList.begin(), smsList.end(), [this,&menu](auto& sms)
     {
-        menu.addSelectionListItem(sms.second->getMessageSummary(),"");
+        menu.addSelectionListItem(constructSmsSummary(*(sms.second)),"");
     });
 
 }
