@@ -17,9 +17,8 @@ enum SmsTransmissionState
     Bounce
 };
 
-class SMS
+struct SMS
 {
-public:
     SMS();
     SMS(common::PhoneNumber from, common::PhoneNumber to, std::string message, bool isRead, SmsTransmissionState state = initial);
     SMS(const SMS &sms);
