@@ -111,11 +111,14 @@ void ConnectedState::handleAcceptOnComposeSMSView(IUeGui::ISmsComposeMode& smsCo
     auto msgToSend = context.user.getInputString(smsComposer);
 
     context.smsDb.addSMS(
-            context.user.getPhoneNumber(),
-            receiverNumber ,
-            msgToSend,
-            true,
-            Send);
+                ue::SMS{
+                    context.user.getPhoneNumber(),
+                    receiverNumber ,
+                    msgToSend,
+                    true,
+                    Send
+                }
+            );
 
     context.bts.sendSMS(receiverNumber,msgToSend);
     handleMainMenu();
@@ -131,11 +134,13 @@ void ConnectedState::handleSMS(common::PhoneNumber from, std::string text, commo
         case common::MessageId::Sms:
         {
             context.smsDb.addSMS(
-                    from,
-                    context.user.getPhoneNumber(),
-                    text,
-                    false,
-                    Received
+                    ue::SMS{
+                            context.user.getPhoneNumber(),
+                            from ,
+                            text,
+                            false,
+                            Received
+                    }
             );
             context.user.showSMSNotification();
             break;
@@ -144,7 +149,10 @@ void ConnectedState::handleSMS(common::PhoneNumber from, std::string text, commo
         {
             auto sms = context.smsDb.getLastSMSSend();
             if(sms)
-                sms.value()->setSMSTransmissionState(Bounce);
+                sms.value()->smsTransmissionState = Bounce;
+        }
+        default:{
+            break;
         }
     }
 }

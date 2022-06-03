@@ -9,17 +9,17 @@ namespace ue
     {
     }
 
-    void BasicSMSDatabase::addSMS(common::PhoneNumber from, common::PhoneNumber to, std::string message, bool isRead, SmsTransmissionState state )
+    void BasicSMSDatabase::addSMS(const SMS& sms)
     {
         data.emplace_back(
-                nextId++, std::make_unique<SMS>(from,to,message,isRead,state)
-                );
+                nextId++, std::make_unique<SMS>(ue::SMS(sms))
+        );
     }
 
-    void BasicSMSDatabase::addSMS(SMS& sms)
+    void BasicSMSDatabase::addSMS(SMS &&sms)
     {
         data.emplace_back(
-                nextId++, std::make_unique<SMS>(sms.getFromNumber(),sms.getToNumber(),sms.getMessage(),sms.getIsReadStatus(),sms.getSMSTransmissionState())
+                nextId++, std::make_unique<SMS>(sms)
         );
     }
 
@@ -28,7 +28,7 @@ namespace ue
         return *data.at(id).second;
     }
 
-    const std::vector<std::pair<unsigned int, std::shared_ptr< SMS>>>& BasicSMSDatabase::getAllSMS()
+    const std::vector<std::pair<unsigned int, std::shared_ptr<SMS>>>& BasicSMSDatabase::getAllSMS()
     {
         return data;
     }
@@ -38,9 +38,11 @@ namespace ue
         for (size_t i = data.size() - 1; i > 0; --i)
         {
             std::shared_ptr< SMS>& sms = data[i].second;
-            if(sms->getSMSTransmissionState() == Send)
+            if(sms->smsTransmissionState == Send)
                 return sms;
         }
         return {};
     }
+
+
 }

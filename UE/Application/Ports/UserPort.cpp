@@ -117,16 +117,16 @@ void UserPort::showSMS(SMS &sms)
 {
     IUeGui::ITextMode& smsView = gui.setViewTextMode();
     std::string header;
-    if(sms.getFromNumber()==phoneNumber)
+    if(sms.from == phoneNumber)
     {
-        header = "from You to " + common::to_string(sms.getToNumber()) + "\n\n";
+        header = "from You to " + common::to_string(sms.to) + "\n\n";
     }
     else
     {
-        header = "from " + common::to_string(sms.getFromNumber()) + "\n\n";
+        header = "from " + common::to_string(sms.from) + "\n\n";
     }
-    smsView.setText( header + sms.getMessage());
-    sms.setIsReadStatus(true);
+    smsView.setText( header + sms.message);
+    sms.isRead = true;
 }
 
 void UserPort::showSMS(SMS &&sms)
@@ -136,11 +136,11 @@ void UserPort::showSMS(SMS &&sms)
 
 std::basic_string<char> UserPort::constructSmsSummary(SMS &sms) const
 {
-    std::basic_string message(sms.getMessage());
+    std::basic_string message(sms.message);
     uint8_t pos = message.find_first_of('\n');
     if( pos > MAX_SUMMARY_SIZE ) pos = MAX_SUMMARY_SIZE;
 
-    switch(sms.getSMSTransmissionState())
+    switch(sms.smsTransmissionState)
     {
         case Bounce:
         {
@@ -148,7 +148,7 @@ std::basic_string<char> UserPort::constructSmsSummary(SMS &sms) const
         }
         case Received:
         {
-            if (sms.getIsReadStatus())
+            if (sms.isRead)
                 return message.substr(0, pos);
             else
                 return "*" + message.substr(0, pos - 1);
@@ -159,7 +159,7 @@ std::basic_string<char> UserPort::constructSmsSummary(SMS &sms) const
         }
         case initial:
         {
-            if (sms.getIsReadStatus())
+            if (sms.isRead)
                 return message.substr(0, pos);
             else
                 return "*" + message.substr(0, pos - 1);

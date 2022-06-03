@@ -22,20 +22,13 @@ struct SMS
     SMS();
     SMS(common::PhoneNumber from, common::PhoneNumber to, std::string message, bool isRead, SmsTransmissionState state = initial);
     SMS(const SMS &sms);
+    SMS(SMS&& sms) noexcept;
     SMS &operator =(const SMS &sms);
 
-    std::string getMessage();
-    common::PhoneNumber getFromNumber();
-    common::PhoneNumber getToNumber();
-    void setSMSTransmissionState(SmsTransmissionState state);
-    SmsTransmissionState getSMSTransmissionState();
-    void setIsReadStatus(bool status);
-    bool getIsReadStatus();
 
-private:
     std::string message;
-    common::PhoneNumber from;
-    common::PhoneNumber to;
+    common::PhoneNumber from{};
+    common::PhoneNumber to{};
     bool isRead = false;
     SmsTransmissionState smsTransmissionState;
 };
