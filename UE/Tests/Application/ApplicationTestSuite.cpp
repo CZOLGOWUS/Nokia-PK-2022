@@ -136,8 +136,7 @@ TEST_F(ApplicationConnectedTestSuite, shallHandleReceivingSMS)
 {
     EXPECT_CALL(userPortMock, showSMSNotification());
     EXPECT_CALL(userPortMock, getPhoneNumber());
-    ue::SMS s  = ue::SMS{SENDER_NUMBER,PHONE_NUMBER ,MESSAGE,false,initial};
-    EXPECT_CALL(smsDb, addSMS( std::move(s) ));
+    EXPECT_CALL(smsDb, addSMS_rvr( ue::SMS{SENDER_NUMBER,PHONE_NUMBER ,MESSAGE,false,initial}));
 
     objectUnderTest.handleSMS(SENDER_NUMBER,MESSAGE,common::MessageId::Sms);
 }
