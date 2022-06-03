@@ -28,22 +28,22 @@ public:
 
 SingleRecordSMSDBTestSuite::SingleRecordSMSDBTestSuite()
 {
-    objectUnderTest.addSMS(FROM[0], TO, MESSAGES[0]);
+    objectUnderTest.addSMS(ue::SMS( FROM[0], TO, MESSAGES[0], false, ue::initial ));
 }
 
 TEST_F(SingleRecordSMSDBTestSuite, shallReturnAddedMessage)
 {
-    ASSERT_EQ(objectUnderTest.getSMS(0).getMessage(), MESSAGES[0]);
+    ASSERT_EQ(objectUnderTest.getSMS(0).message, MESSAGES[0]);
 }
 
 TEST_F(SingleRecordSMSDBTestSuite, shallReturnAddedSourceNumber)
 {
-    ASSERT_EQ(objectUnderTest.getSMS(0).getFromNumber(), FROM[0]);
+    ASSERT_EQ(objectUnderTest.getSMS(0).from, FROM[0]);
 }
 
 TEST_F(SingleRecordSMSDBTestSuite, shallReturnAddedDestinationNumber)
 {
-    ASSERT_EQ(objectUnderTest.getSMS(0).getToNumber(), TO);
+    ASSERT_EQ(objectUnderTest.getSMS(0).to, TO);
 }
 
 struct MultipleRecordsSMSDBTestSuite : BasicSMSDBTestSuite
@@ -56,32 +56,32 @@ protected:
 
 MultipleRecordsSMSDBTestSuite::MultipleRecordsSMSDBTestSuite()
 {
-    objectUnderTest.addSMS(FROM[0], TO, MESSAGES[0]);
-    objectUnderTest.addSMS(FROM[1], TO, MESSAGES[1]);
+    objectUnderTest.addSMS(ue::SMS(FROM[0], TO, MESSAGES[0],true,ue::Send));
+    objectUnderTest.addSMS(ue::SMS( FROM[1], TO, MESSAGES[1],true,ue::Send));
     //reply to FROM[1] number
-    objectUnderTest.addSMS(TO, FROM[1], REPLY_MESSAGE,true);
+    objectUnderTest.addSMS(ue::SMS( TO, FROM[1], REPLY_MESSAGE,true));
 }
 
 TEST_F(MultipleRecordsSMSDBTestSuite, shallReturnAddedMessages)
 {
-    ASSERT_EQ(objectUnderTest.getSMS(0).getMessage(), MESSAGES[0]);
-    ASSERT_EQ(objectUnderTest.getSMS(1).getMessage(), MESSAGES[1]);
+    ASSERT_EQ(objectUnderTest.getSMS(0).message, MESSAGES[0]);
+    ASSERT_EQ(objectUnderTest.getSMS(1).message, MESSAGES[1]);
 
-    ASSERT_EQ(objectUnderTest.getSMS(2).getMessage(), REPLY_MESSAGE);
+    ASSERT_EQ(objectUnderTest.getSMS(2).message, REPLY_MESSAGE);
 }
 
 TEST_F(MultipleRecordsSMSDBTestSuite, shallReturnAddedSourceNumbers)
 {
-    ASSERT_EQ(objectUnderTest.getSMS(0).getFromNumber(), FROM[0]);
-    ASSERT_EQ(objectUnderTest.getSMS(1).getFromNumber(), FROM[1]);
+    ASSERT_EQ(objectUnderTest.getSMS(0).from, FROM[0]);
+    ASSERT_EQ(objectUnderTest.getSMS(1).from, FROM[1]);
 
-    ASSERT_EQ(objectUnderTest.getSMS(2).getFromNumber(), TO);
+    ASSERT_EQ(objectUnderTest.getSMS(2).from, TO);
 }
 
 TEST_F(MultipleRecordsSMSDBTestSuite, shallReturnAddedDestinationNumbers)
 {
-    ASSERT_EQ(objectUnderTest.getSMS(0).getToNumber(), TO);
-    ASSERT_EQ(objectUnderTest.getSMS(1).getToNumber(), TO);
+    ASSERT_EQ(objectUnderTest.getSMS(0).to, TO);
+    ASSERT_EQ(objectUnderTest.getSMS(1).to, TO);
 
-    ASSERT_EQ(objectUnderTest.getSMS(2).getToNumber(), FROM[1]);
+    ASSERT_EQ(objectUnderTest.getSMS(2).to, FROM[1]);
 }

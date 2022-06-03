@@ -16,10 +16,11 @@ namespace ue
         );
     }
 
-    void BasicSMSDatabase::addSMS(SMS &&sms)
+    void BasicSMSDatabase::addSMS(SMS&& sms)
     {
+        std::cout << "sms moved\n";
         data.emplace_back(
-                nextId++, std::make_unique<SMS>(sms)
+                nextId++, std::make_unique<SMS>(std::forward<SMS>(sms))
         );
     }
 
