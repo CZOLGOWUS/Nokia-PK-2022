@@ -17,6 +17,7 @@ class BtsPortTestSuite : public Test
 {
 protected:
     const common::PhoneNumber PHONE_NUMBER{112};
+    const common::PhoneNumber CALLING_PHONE{117};
     const common::BtsId BTS_ID{13121981ll};
     NiceMock<common::ILoggerMock> loggerMock;
     StrictMock<IBtsEventsHandlerMock> handlerMock;
@@ -81,14 +82,64 @@ TEST_F(BtsPortTestSuite, shallHandleAttachAccept)
     messageCallback(msg.getMessage());
 }
 
+
 TEST_F(BtsPortTestSuite, shallHandleAttachReject)
 {
-    EXPECT_CALL(handlerMock, handleAttachReject());
-    common::OutgoingMessage msg{common::MessageId::AttachResponse,
-                                common::PhoneNumber{},
-                                PHONE_NUMBER};
-    msg.writeNumber(false);
-    messageCallback(msg.getMessage());
+EXPECT_CALL(handlerMock, handleAttachReject());
+common::OutgoingMessage msg{common::MessageId::AttachResponse,
+                            common::PhoneNumber{},
+                            PHONE_NUMBER};
+msg.writeNumber(false);
+messageCallback(msg.getMessage());
+}
+
+TEST_F(BtsPortTestSuite, shallHandleCallRequest)
+{
+EXPECT_CALL(handlerMock, handleCallRequest(CALLING_PHONE));
+common::OutgoingMessage msg{common::MessageId::CallRequest,
+                            CALLING_PHONE,
+                            PHONE_NUMBER};
+messageCallback(msg.getMessage());
+}
+
+TEST_F(BtsPortTestSuite, shallHandleCallAccepted)
+{
+EXPECT_CALL(handlerMock, handleCallAccepted(CALLING_PHONE));
+common::OutgoingMessage msg{common::MessageId::CallAccepted,
+                            CALLING_PHONE,
+                            PHONE_NUMBER};
+messageCallback(msg.getMessage());
+}
+
+TEST_F(BtsPortTestSuite, shallHandleCallDropped)
+{
+EXPECT_CALL(handlerMock, handleCallDropped(CALLING_PHONE));
+common::OutgoingMessage msg{common::MessageId::CallDropped,
+                            CALLING_PHONE,
+                            PHONE_NUMBER};
+messageCallback(msg.getMessage());
+}
+
+TEST_F(BtsPortTestSuite, shallHandleUnknownRecipientAfterCallRequest)
+{
+EXPECT_CALL(handlerMock, handleUnknownRecipientAfterCallRequest());
+common::OutgoingMessage msg{common::MessageId::UnknownRecipient,
+                            CALLING_PHONE,
+                            PHONE_NUMBER};
+common::MessageHeader failMsg = {common::MessageId::CallRequest,CALLING_PHONE, PHONE_NUMBER};
+msg.writeMessageHeader(failMsg);
+messageCallback(msg.getMessage());
+}
+
+TEST_F(BtsPortTestSuite, shallHandleUnknownRecipientAfterCallAccepted)
+{
+EXPECT_CALL(handlerMock, handleUnknownRecipientAfterCallAccepted());
+common::OutgoingMessage msg{common::MessageId::UnknownRecipient,
+                            CALLING_PHONE,
+                            PHONE_NUMBER};
+common::MessageHeader failMsg = {common::MessageId::CallAccepted,CALLING_PHONE, PHONE_NUMBER};
+msg.writeMessageHeader(failMsg);
+messageCallback(msg.getMessage());
 }
 
 TEST_F(BtsPortTestSuite, shallSendAttachRequest)
@@ -102,6 +153,42 @@ TEST_F(BtsPortTestSuite, shallSendAttachRequest)
     ASSERT_NO_THROW(EXPECT_EQ(common::PhoneNumber{}, reader.readPhoneNumber()));
     ASSERT_NO_THROW(EXPECT_EQ(BTS_ID, reader.readBtsId()));
     ASSERT_NO_THROW(reader.checkEndOfMessage());
+}
+
+TEST_F(BtsPortTestSuite, shallSendCallRequest)
+{
+common::BinaryMessage msg;
+EXPECT_CALL(transportMock, sendMessage(_)).WillOnce([&msg](auto param) { msg = std::move(param); return true; });
+objectUnderTest.sendCallRequest(CALLING_PHONE);
+common::IncomingMessage reader(msg);
+ASSERT_NO_THROW(EXPECT_EQ(common::MessageId::CallRequest, reader.readMessageId()) );
+ASSERT_NO_THROW(EXPECT_EQ(PHONE_NUMBER, reader.readPhoneNumber()));
+ASSERT_NO_THROW(EXPECT_EQ(CALLING_PHONE, reader.readPhoneNumber()));
+ASSERT_NO_THROW(reader.checkEndOfMessage());
+}
+
+TEST_F(BtsPortTestSuite, shallSendCallAccepted)
+{
+common::BinaryMessage msg;
+EXPECT_CALL(transportMock, sendMessage(_)).WillOnce([&msg](auto param) { msg = std::move(param); return true; });
+objectUnderTest.sendCallAccepted(CALLING_PHONE);
+common::IncomingMessage reader(msg);
+ASSERT_NO_THROW(EXPECT_EQ(common::MessageId::CallAccepted, reader.readMessageId()) );
+ASSERT_NO_THROW(EXPECT_EQ(PHONE_NUMBER, reader.readPhoneNumber()));
+ASSERT_NO_THROW(EXPECT_EQ(CALLING_PHONE, reader.readPhoneNumber()));
+ASSERT_NO_THROW(reader.checkEndOfMessage());
+}
+
+TEST_F(BtsPortTestSuite, shallSendCallDropped)
+{
+common::BinaryMessage msg;
+EXPECT_CALL(transportMock, sendMessage(_)).WillOnce([&msg](auto param) { msg = std::move(param); return true; });
+objectUnderTest.sendCallDropped(CALLING_PHONE);
+common::IncomingMessage reader(msg);
+ASSERT_NO_THROW(EXPECT_EQ(common::MessageId::CallDropped, reader.readMessageId()) );
+ASSERT_NO_THROW(EXPECT_EQ(PHONE_NUMBER, reader.readPhoneNumber()));
+ASSERT_NO_THROW(EXPECT_EQ(CALLING_PHONE, reader.readPhoneNumber()));
+ASSERT_NO_THROW(reader.checkEndOfMessage());
 }
 
 }

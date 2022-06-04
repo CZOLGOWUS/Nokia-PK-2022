@@ -7,6 +7,7 @@
 #include "UeGui/IDialMode.hpp"
 #include "UeGui/ICallMode.hpp"
 #include "UeGui/ITextMode.hpp"
+#include "Messages/PhoneNumber.hpp"
 
 namespace ue
 {

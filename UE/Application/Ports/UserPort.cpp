@@ -164,7 +164,6 @@ void UserPort::showNewCallRequest(common::PhoneNumber from) {
 void UserPort::showTalking()
 {
     IUeGui::ICallMode& call = gui.setCallMode();
-
 }
 
 void UserPort::showDialing(common::PhoneNumber to)
