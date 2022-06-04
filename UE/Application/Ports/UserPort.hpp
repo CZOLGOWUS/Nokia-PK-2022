@@ -28,8 +28,8 @@ public:
 
     void showSMSList(const smsContainer&& smsList) override;
     void showSMSList(const smsContainer& smsList) override;
-    void showSMS(ITextMessage& sms) override;
-    void showSMS(ITextMessage&& sms) override;
+    void showSMS(SMS& sms) override;
+    void showSMS(SMS&& sms) override;
     void showSMSNotification() override;
 
     IUeGui::ISmsComposeMode& initSmsComposer() override;
@@ -56,6 +56,8 @@ private:
     IUeGui& gui;
     common::PhoneNumber phoneNumber;
     IUserEventsHandler* handler = nullptr;
+
+    [[nodiscard]] std::basic_string<char> constructSmsSummary(ue::SMS& sms) const;
 };
 
 }

@@ -93,9 +93,9 @@ void UserPort::showSMSList(const smsContainer&& smsList)
     IUeGui::IListViewMode& menu = gui.setListViewMode();
     menu.clearSelectionList();
 
-    std::for_each(smsList.begin(), smsList.end(), [&menu](auto& sms)
+    std::for_each(smsList.begin(), smsList.end(), [this,&menu](auto& sms)
     {
-        menu.addSelectionListItem(sms.second->getMessageSummary(),"");
+        menu.addSelectionListItem(constructSmsSummary(*(sms.second)),"");
     });
 
 }
@@ -106,32 +106,69 @@ void UserPort::showSMSList(const smsContainer& smsList)
     IUeGui::IListViewMode& menu = gui.setListViewMode();
     menu.clearSelectionList();
 
-    std::for_each(smsList.begin(), smsList.end(), [&menu](auto& sms)
+    std::for_each(smsList.begin(), smsList.end(), [this,&menu](auto& sms)
     {
-        menu.addSelectionListItem(sms.second->getMessageSummary(),"");
+        menu.addSelectionListItem(constructSmsSummary(*(sms.second)),"");
     });
 
 }
 
-void UserPort::showSMS(ITextMessage &sms)
+void UserPort::showSMS(SMS &sms)
 {
     IUeGui::ITextMode& smsView = gui.setViewTextMode();
     std::string header;
-    if(sms.getFromNumber()==phoneNumber)
+    if(sms.from == phoneNumber)
     {
-        header = "from You to " + common::to_string(sms.getToNumber()) + "\n\n";
+        header = "from You to " + common::to_string(sms.to) + "\n\n";
     }
     else
     {
-        header = "from " + common::to_string(sms.getFromNumber()) + "\n\n";
+        header = "from " + common::to_string(sms.from) + "\n\n";
     }
-    smsView.setText( header + sms.getMessage());
-    sms.setIsReadStatus(true);
+    smsView.setText( header + sms.message);
+    sms.isRead = true;
 }
 
-void UserPort::showSMS(ITextMessage &&sms)
+void UserPort::showSMS(SMS &&sms)
 {
     showSMS(sms);
+}
+
+std::basic_string<char> UserPort::constructSmsSummary(SMS &sms) const
+{
+    std::basic_string message(sms.message);
+    uint8_t pos = message.find_first_of('\n');
+    if( pos > MAX_SUMMARY_SIZE ) pos = MAX_SUMMARY_SIZE;
+
+    switch(sms.smsTransmissionState)
+    {
+        case Bounce:
+        {
+            return "SEND ERR: " + message.substr(0, pos - 10);
+        }
+        case Received:
+        {
+            if (sms.isRead)
+                return message.substr(0, pos);
+            else
+                return "*" + message.substr(0, pos - 1);
+        }
+        case Send:
+        {
+            return message.substr(0, pos);
+        }
+        case initial:
+        {
+            if (sms.isRead)
+                return message.substr(0, pos);
+            else
+                return "*" + message.substr(0, pos - 1);
+        }
+        default:
+        {
+            return "unhandled-case";
+        }
+    }
 }
 
 void UserPort::showSMSNotification()

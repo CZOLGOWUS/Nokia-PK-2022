@@ -31,8 +31,8 @@ public:
     MOCK_METHOD(common::PhoneNumber,getPhoneNumber,(),(final));
     MOCK_METHOD(void,showSMSList,(smsContainer&&),(final));
     MOCK_METHOD(void,showSMSList,(smsContainer&),(final));
-    MOCK_METHOD(void,showSMS,(ITextMessage&),(final));
-    MOCK_METHOD(void,showSMS,(ITextMessage&&),(final));
+    MOCK_METHOD(void,showSMS,(SMS&),(final));
+    MOCK_METHOD(void,showSMS,(SMS&&),(final));
     MOCK_METHOD(void,showSMSNotification,(),(final));
     MOCK_METHOD(void, showTalking, (), (final));
     MOCK_METHOD(void, showDialing, (common::PhoneNumber), (final));
