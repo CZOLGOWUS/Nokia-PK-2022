@@ -89,7 +89,15 @@ void BtsPort::handleMessage(BinaryMessage msg)
                 case common::MessageId::CallAccepted:
                     handler->handleUnknownRecipientAfterCallAccepted();
                     break;
+                default:
+                    logger.log(common::ILogger::ERROR_LEVEL,"behaviour for this message id not implemented: " + common::to_string(failMsgHeader.messageId));
+                    break;
             }
+            break;
+        }
+        case common::MessageId::UnknownSender:
+        {
+            logger.log(common::ILogger::INFO_LEVEL,"message came from an unknown Sender - msg has been discarded");
             break;
         }
         default:
