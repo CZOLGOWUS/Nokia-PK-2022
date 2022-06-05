@@ -22,7 +22,7 @@ protected:
     const common::PhoneNumber NUMBER{101};
     const common::BtsId BTS_ID{42};
     const common::PhoneNumber SENDER_NUMBER{111};
-    const std::string MESSAGE = "Hello there!";
+
     NiceMock<common::ILoggerMock> loggerMock;
     StrictMock<IBtsPortMock> btsPortMock;
     StrictMock<IUserPortMock> userPortMock;
@@ -115,6 +115,11 @@ TEST_F(ApplicationConnectingTestSuite, shallFailAttachOnTimeOut)
 
 struct ApplicationConnectedTestSuite : ApplicationConnectingTestSuite
 {
+
+    const std::string MESSAGES[2] = {"Hello. How are you?", "Test message 2."};
+    const std::string SUMMARIES_UNREAD[2] = {"*Hello. How are", "*Test message 2"};
+    const std::string SUMMARIES_READ[2] = {"Hello. How are ", "Test message 2."};
+
     ApplicationConnectedTestSuite();
     void testHandleCallRequest();
 };
@@ -136,9 +141,9 @@ TEST_F(ApplicationConnectedTestSuite, shallHandleReceivingSMS)
 {
     EXPECT_CALL(userPortMock, showSMSNotification());
     EXPECT_CALL(userPortMock, getPhoneNumber());
-    EXPECT_CALL(smsDb, addSMS_rvr( ue::SMS{SENDER_NUMBER,PHONE_NUMBER ,MESSAGE,false,initial}));
+    EXPECT_CALL(smsDb, addSMS_rvr( ue::SMS{SENDER_NUMBER,PHONE_NUMBER ,MESSAGES[0],false,initial}));
 
-    objectUnderTest.handleSMS(SENDER_NUMBER,MESSAGE,common::MessageId::Sms);
+    objectUnderTest.handleSMS(SENDER_NUMBER,MESSAGES[0],common::MessageId::Sms);
 }
 
 void ApplicationConnectedTestSuite::testHandleCallRequest()

@@ -14,8 +14,6 @@ protected:
     const common::PhoneNumber FROM[2] = {101, 102};
     const common::PhoneNumber TO{201};
     const std::string MESSAGES[2] = {"Hello. How are you?", "Test message 2."};
-    const std::string SUMMARIES_UNREAD[2] = {"*Hello. How are", "*Test message 2"};
-    const std::string SUMMARIES_READ[2] = {"Hello. How are ", "Test message 2."};
 
     ue::BasicSMSDatabase objectUnderTest{};
 };

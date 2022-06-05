@@ -18,6 +18,12 @@ class UserPortTestSuite : public Test
 {
 protected:
     const common::PhoneNumber PHONE_NUMBER{112};
+    const common::PhoneNumber SECOND_PHONE_NUMBER{113};
+    const std::string MESSAGES[3] = {"Hello. How are you?", "Test message 2.", "Test message 3."};
+    const std::string SUMMARIES_UNREAD[3] = {"*Hello. How are", "*Test message 2", "*Test message 3"};
+    const std::string SUMMARIES_SENDING_ERROR_UNREAD[3] = {"SEND ERR: Hello", "SEND ERR: Test ", "SEND ERR: Test "};
+    const std::string SUMMARIES_SENDING_ERROR_READ[3] = {"*SEND ERR: Hell", "*SEND ERR: Test", "*SEND ERR: Test"};
+    const std::string SUMMARIES_READ[3] = {"Hello. How are ", "Test message 2.", "Test message 3."};
     std::vector<std::pair<unsigned int,std::shared_ptr< SMS>>> smsContainer;
 
     NiceMock<common::ILoggerMock> loggerMock;
@@ -31,9 +37,9 @@ protected:
 
     UserPortTestSuite()
     {
-        smsContainer.emplace_back(0,std::make_unique<SMS>());
-        smsContainer.emplace_back(1,std::make_unique<SMS>());
-        smsContainer.emplace_back(2,std::make_unique<SMS>());
+        smsContainer.emplace_back(0,std::make_unique<SMS>(ue::SMS{PHONE_NUMBER,SECOND_PHONE_NUMBER,MESSAGES[0], false, ue::Received}));
+        smsContainer.emplace_back(1,std::make_unique<SMS>(ue::SMS{PHONE_NUMBER,SECOND_PHONE_NUMBER,MESSAGES[0], true, ue::Received}));
+        smsContainer.emplace_back(2,std::make_unique<SMS>(ue::SMS{PHONE_NUMBER,SECOND_PHONE_NUMBER,MESSAGES[0], false, ue::Bounce}));
 
         EXPECT_CALL(guiMock, setTitle(HasSubstr(to_string(PHONE_NUMBER))));
         objectUnderTest.start(handlerMock);
@@ -97,6 +103,11 @@ TEST_F(UserPortTestSuite, shallShowSMSCompose)
     EXPECT_CALL(guiMock,setSmsComposeMode()).WillOnce(ReturnRef(smsComposeModeMock));
 
     objectUnderTest.initSmsComposer();
+}
+
+TEST_F(UserPortTestSuite, shallReturnCorrectSMSSummary)
+{
+    //objectUnderTest.showSMSList();
 }
 
 }
