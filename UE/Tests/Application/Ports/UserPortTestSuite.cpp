@@ -38,8 +38,8 @@ protected:
     UserPortTestSuite()
     {
         smsContainer.emplace_back(0,std::make_unique<SMS>(ue::SMS{PHONE_NUMBER,SECOND_PHONE_NUMBER,MESSAGES[0], false, ue::Received}));
-        smsContainer.emplace_back(1,std::make_unique<SMS>(ue::SMS{PHONE_NUMBER,SECOND_PHONE_NUMBER,MESSAGES[0], true, ue::Received}));
-        smsContainer.emplace_back(2,std::make_unique<SMS>(ue::SMS{PHONE_NUMBER,SECOND_PHONE_NUMBER,MESSAGES[0], false, ue::Bounce}));
+        smsContainer.emplace_back(1,std::make_unique<SMS>(ue::SMS{PHONE_NUMBER,SECOND_PHONE_NUMBER,MESSAGES[1], true, ue::Received}));
+        smsContainer.emplace_back(2,std::make_unique<SMS>(ue::SMS{PHONE_NUMBER,SECOND_PHONE_NUMBER,MESSAGES[2], false, ue::Bounce}));
 
         EXPECT_CALL(guiMock, setTitle(HasSubstr(to_string(PHONE_NUMBER))));
         objectUnderTest.start(handlerMock);
@@ -105,9 +105,6 @@ TEST_F(UserPortTestSuite, shallShowSMSCompose)
     objectUnderTest.initSmsComposer();
 }
 
-TEST_F(UserPortTestSuite, shallReturnCorrectSMSSummary)
-{
-    //objectUnderTest.showSMSList();
-}
+
 
 }

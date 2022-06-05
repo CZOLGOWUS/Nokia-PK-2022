@@ -27,7 +27,7 @@ protected:
     StrictMock<IBtsPortMock> btsPortMock;
     StrictMock<IUserPortMock> userPortMock;
     StrictMock<ITimerPortMock> timerPortMock;
-    NiceMock<ISMSDatabaseMock> smsDb;
+    NiceMock<ISMSDatabaseMock> smsDbMock;
 
     Expectation expectNoTConnected = EXPECT_CALL(userPortMock, showNotConnected());
 
@@ -36,7 +36,7 @@ protected:
                                 btsPortMock,
                                 userPortMock,
                                 timerPortMock,
-                                smsDb};
+                                smsDbMock};
 };
 
 
@@ -141,9 +141,16 @@ TEST_F(ApplicationConnectedTestSuite, shallHandleReceivingSMS)
 {
     EXPECT_CALL(userPortMock, showSMSNotification());
     EXPECT_CALL(userPortMock, getPhoneNumber());
-    EXPECT_CALL(smsDb, addSMS_rvr( ue::SMS{SENDER_NUMBER,PHONE_NUMBER ,MESSAGES[0],false,initial}));
+    EXPECT_CALL(smsDbMock, addSMS_rvr( ue::SMS{SENDER_NUMBER,PHONE_NUMBER ,MESSAGES[0],false,initial}));
 
     objectUnderTest.handleSMS(SENDER_NUMBER,MESSAGES[0],common::MessageId::Sms);
+}
+
+TEST_F(ApplicationConnectedTestSuite, shallHandleRecevingBouncedSMSWithNoSMSs)
+{
+    EXPECT_CALL(smsDbMock, getLastSMSSend());
+
+    objectUnderTest.handleSMS(SENDER_NUMBER,MESSAGES[0],common::MessageId::UnknownRecipient);
 }
 
 void ApplicationConnectedTestSuite::testHandleCallRequest()
