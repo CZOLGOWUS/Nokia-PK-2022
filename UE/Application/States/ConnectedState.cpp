@@ -151,7 +151,10 @@ void ConnectedState::handleSMS(common::PhoneNumber from, std::string text, commo
             if(sms) {
                 sms.value()->smsTransmissionState = Bounce;
                 sms.value()->isRead = false;
+                context.user.showSMSNotification();
             }
+
+            break;
         }
         default:{
             break;
