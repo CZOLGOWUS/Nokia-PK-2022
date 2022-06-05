@@ -144,7 +144,11 @@ std::basic_string<char> UserPort::constructSmsSummary(const SMS &sms) const
     {
         case Bounce:
         {
-            return "SEND ERR: " + message.substr(0, pos - 10);
+            if (sms.isRead)
+                return "SEND ERR: " + message.substr(0, pos - 11);
+            else
+                return "*SEND ERR: " + message.substr(0, pos - 11);
+
         }
         case Received:
         {

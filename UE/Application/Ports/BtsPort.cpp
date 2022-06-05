@@ -77,12 +77,11 @@ void BtsPort::handleMessage(BinaryMessage msg)
         }
         case common::MessageId::UnknownRecipient:
         {
-            auto failMsgId = reader.readMessageId();
-            switch (failMsgId) {
+            auto failMsgHeader = reader.readMessageHeader();
+            switch (failMsgHeader.messageId) {
                 case common::MessageId::Sms:
-                    logger.logError("unknown message: ", msgId, ", to: ",to);
-                    handler->handleSMS(from, reader.readRemainingText(),
-                                       common::MessageId::UnknownRecipient);
+                    logger.logError("unknown message: ", msgId, ", to: ",failMsgHeader.to);
+                    handler->handleSMS(from, reader.readRemainingText(), common::MessageId::UnknownRecipient);
                     break;
                 case common::MessageId::CallRequest:
                     handler->handleUnknownRecipientAfterCallRequest();

@@ -148,8 +148,10 @@ void ConnectedState::handleSMS(common::PhoneNumber from, std::string text, commo
         case common::MessageId::UnknownRecipient:
         {
             auto sms = context.smsDb.getLastSMSSend();
-            if(sms)
+            if(sms) {
                 sms.value()->smsTransmissionState = Bounce;
+                sms.value()->isRead = false;
+            }
         }
         default:{
             break;
