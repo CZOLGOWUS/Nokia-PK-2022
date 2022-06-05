@@ -57,7 +57,7 @@ private:
     common::PhoneNumber phoneNumber;
     IUserEventsHandler* handler = nullptr;
 
-    [[nodiscard]] std::basic_string<char> constructSmsSummary(ue::SMS& sms) const;
+    [[nodiscard]] std::basic_string<char> constructSmsSummary(const ue::SMS& sms) const;
 };
 
 }

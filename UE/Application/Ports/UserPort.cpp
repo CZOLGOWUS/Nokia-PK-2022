@@ -134,7 +134,7 @@ void UserPort::showSMS(SMS &&sms)
     showSMS(sms);
 }
 
-std::basic_string<char> UserPort::constructSmsSummary(SMS &sms) const
+std::basic_string<char> UserPort::constructSmsSummary(const SMS &sms) const
 {
     std::basic_string message(sms.message);
     uint8_t pos = message.find_first_of('\n');
