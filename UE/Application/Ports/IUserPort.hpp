@@ -58,7 +58,7 @@ public:
 
     virtual void showNewCallRequest(common::PhoneNumber from) = 0;
     virtual void showTalking() = 0;
-    virtual void showDialing(common::PhoneNumber to) = 0;
+    virtual void showCalling(common::PhoneNumber to) = 0;
     virtual void showPartnerNotAvailable() = 0;
     virtual void showCallDropped() = 0;
 

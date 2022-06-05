@@ -31,6 +31,9 @@ protected:
     StrictMock<IUeGuiMock> guiMock;
     StrictMock<IListViewModeMock> listViewModeMock;
     StrictMock<ITextModeMock> textModeMock;
+    StrictMock<ITextModeMock> alertModeMock;
+    StrictMock<IDialModeMock> dialModeMock;
+    StrictMock<ICallModeMock> callModeMock;
     StrictMock<ISmsComposeModeMock> smsComposeModeMock;
 
     UserPort objectUnderTest{loggerMock, guiMock, PHONE_NUMBER};
@@ -105,6 +108,44 @@ TEST_F(UserPortTestSuite, shallShowSMSCompose)
     objectUnderTest.initSmsComposer();
 }
 
+TEST_F(UserPortTestSuite, shallInitDialMode)
+{
+    EXPECT_CALL(guiMock,setDialMode()).WillOnce(ReturnRef(dialModeMock));
+    objectUnderTest.initDialMode();
+}
 
+TEST_F(UserPortTestSuite, shallShowTalkingMode)
+{
+    EXPECT_CALL(guiMock,setCallMode()).WillOnce(ReturnRef(callModeMock));
+    objectUnderTest.showTalking();
+}
+
+TEST_F(UserPortTestSuite, shallShowCalling)
+{
+    EXPECT_CALL(guiMock,setAlertMode()).WillOnce(ReturnRef(alertModeMock));
+    EXPECT_CALL(alertModeMock, setText(_));
+    objectUnderTest.showCalling(PHONE_NUMBER);
+}
+
+TEST_F(UserPortTestSuite, shallShowNewCallRequest)
+{
+    EXPECT_CALL(guiMock,setAlertMode()).WillOnce(ReturnRef(alertModeMock));
+    EXPECT_CALL(alertModeMock, setText(_));
+    objectUnderTest.showNewCallRequest(PHONE_NUMBER);
+}
+
+TEST_F(UserPortTestSuite, shallShowPartnerNotAvailable)
+{
+    EXPECT_CALL(guiMock,setAlertMode()).WillOnce(ReturnRef(alertModeMock));
+    EXPECT_CALL(alertModeMock, setText(_));
+    objectUnderTest.showPartnerNotAvailable();
+}
+
+TEST_F(UserPortTestSuite, shallShowCallDropped)
+{
+    EXPECT_CALL(guiMock,setAlertMode()).WillOnce(ReturnRef(alertModeMock));
+    EXPECT_CALL(alertModeMock, setText(_));
+    objectUnderTest.showCallDropped();
+}
 
 }

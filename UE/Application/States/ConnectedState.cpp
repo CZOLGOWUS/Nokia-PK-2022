@@ -172,7 +172,7 @@ void ConnectedState::handleAcceptOnDial(IUeGui::IDialMode& dial)
     auto phoneNumber = dial.getPhoneNumber();
     context.currentCallingStatus.callingNumber = phoneNumber;
     context.currentCallingStatus.isOutgoingCall = true;
-    context.user.showDialing(phoneNumber);
+    context.user.showCalling(phoneNumber);
     context.bts.sendCallRequest(phoneNumber);
     context.user.setAcceptCallback([&]{return; });
     context.user.setRejectCallback([&]{handleCallResignation();});
