@@ -114,11 +114,11 @@ TEST_F(UserPortTestSuite, shallShowTalkingMode)
     objectUnderTest.showTalking();
 }
 
-TEST_F(UserPortTestSuite, shallShowDialing)
+TEST_F(UserPortTestSuite, shallShowCalling)
 {
     EXPECT_CALL(guiMock,setAlertMode()).WillOnce(ReturnRef(alertModeMock));
     EXPECT_CALL(alertModeMock, setText(_));
-    objectUnderTest.showDialing(PHONE_NUMBER);
+    objectUnderTest.showCalling(PHONE_NUMBER);
 }
 
 TEST_F(UserPortTestSuite, shallShowNewCallRequest)

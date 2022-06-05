@@ -166,10 +166,10 @@ void UserPort::showTalking()
     IUeGui::ICallMode& call = gui.setCallMode();
 }
 
-void UserPort::showDialing(common::PhoneNumber to)
+void UserPort::showCalling(common::PhoneNumber to)
 {
     IUeGui::ITextMode& dialing = gui.setAlertMode();
-    dialing.setText("Dialling to " + to_string(to) + "...");
+    dialing.setText("Calling to " + to_string(to) + "...");
 }
 
 void UserPort::showPartnerNotAvailable()
@@ -181,7 +181,7 @@ void UserPort::showPartnerNotAvailable()
 void UserPort::showCallDropped()
 {
     IUeGui::ITextMode& info = gui.setAlertMode();
-    info.setText("Call rejected");
+    info.setText("Call dropped");
 }
 
 }
