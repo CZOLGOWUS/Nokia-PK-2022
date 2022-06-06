@@ -15,9 +15,6 @@ namespace ue
     void TalkingState::handleTimeout()
     {
         endCall();
-        context.user.showCallEnded();
-        context.user.setAcceptCallback([&]{ handleCallEnded(); });
-        context.user.setRejectCallback([&]{ handleCallEnded(); });
     }
 
     void TalkingState::handleUnknownRecipientAfterCallAccepted()
