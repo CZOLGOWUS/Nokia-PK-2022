@@ -80,4 +80,38 @@ namespace ue
         context.timer.startTimer(120000ms);
     }
 
+    void TalkingState::handleSMS(common::PhoneNumber from, std::string text, common::MessageId msgType)
+    {
+        switch(msgType) {
+            case common::MessageId::Sms:
+            {
+                context.smsDb.addSMS(
+                        ue::SMS{
+                                context.user.getPhoneNumber(),
+                                from ,
+                                text,
+                                false,
+                                Received
+                        }
+                );
+                context.user.showSMSNotification();
+                break;
+            }
+            case common::MessageId::UnknownRecipient:
+            {
+                auto sms = context.smsDb.getLastSMSSend();
+                if(sms) {
+                    sms.value()->smsTransmissionState = Bounce;
+                    sms.value()->isRead = false;
+                    context.user.showSMSNotification();
+                }
+
+                break;
+            }
+            default:{
+                break;
+            }
+        }
+    }
+
 }

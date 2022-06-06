@@ -17,6 +17,7 @@ public:
     void handleCallTalk(common::PhoneNumber from, std::string msg) override;
     void handleAcceptOnTalk();
     void handleTimeout() override;
+    void handleSMS(common::PhoneNumber from, std::string text, common::MessageId msgType) override;
     TalkingState(Context& context);
 
 };
