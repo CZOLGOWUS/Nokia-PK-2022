@@ -22,12 +22,12 @@ protected:
     const common::PhoneNumber NUMBER{101};
     const common::BtsId BTS_ID{42};
     const common::PhoneNumber SENDER_NUMBER{111};
-    const std::string MESSAGE = "Hello there!";
+
     NiceMock<common::ILoggerMock> loggerMock;
     StrictMock<IBtsPortMock> btsPortMock;
     StrictMock<IUserPortMock> userPortMock;
     StrictMock<ITimerPortMock> timerPortMock;
-    NiceMock<ISMSDatabaseMock> smsDb;
+    NiceMock<ISMSDatabaseMock> smsDbMock;
 
     Expectation expectNoTConnected = EXPECT_CALL(userPortMock, showNotConnected());
 
@@ -36,7 +36,7 @@ protected:
                                 btsPortMock,
                                 userPortMock,
                                 timerPortMock,
-                                smsDb};
+                                smsDbMock};
 };
 
 
@@ -115,8 +115,14 @@ TEST_F(ApplicationConnectingTestSuite, shallFailAttachOnTimeOut)
 
 struct ApplicationConnectedTestSuite : ApplicationConnectingTestSuite
 {
+
+    const std::string MESSAGES[2] = {"Hello. How are you?", "Test message 2."};
+    const std::string SUMMARIES_UNREAD[2] = {"*Hello. How are", "*Test message 2"};
+    const std::string SUMMARIES_READ[2] = {"Hello. How are ", "Test message 2."};
+
     ApplicationConnectedTestSuite();
-    void testHandleCallRequest();
+    void handleCallRequest(common::PhoneNumber number);
+    void requestAcceptOnCallRequest(common::PhoneNumber number);
 };
 
 ApplicationConnectedTestSuite::ApplicationConnectedTestSuite()
@@ -136,13 +142,30 @@ TEST_F(ApplicationConnectedTestSuite, shallHandleReceivingSMS)
 {
     EXPECT_CALL(userPortMock, showSMSNotification());
     EXPECT_CALL(userPortMock, getPhoneNumber());
-    EXPECT_CALL(smsDb, addSMS_rvr( ue::SMS{SENDER_NUMBER,PHONE_NUMBER ,MESSAGE,false,initial}));
+    EXPECT_CALL(smsDbMock, addSMS_rvr( ue::SMS{SENDER_NUMBER,PHONE_NUMBER ,MESSAGES[0],false,initial}));
 
-    objectUnderTest.handleSMS(SENDER_NUMBER,MESSAGE,common::MessageId::Sms);
+    objectUnderTest.handleSMS(SENDER_NUMBER,MESSAGES[0],common::MessageId::Sms);
 }
 
-void ApplicationConnectedTestSuite::testHandleCallRequest()
+TEST_F(ApplicationConnectedTestSuite, shallHandleRecevingBouncedSMSWithNoSMSs)
 {
+    EXPECT_CALL(smsDbMock, getLastSMSSend());
+
+    objectUnderTest.handleSMS(SENDER_NUMBER,MESSAGES[0],common::MessageId::UnknownRecipient);
+}
+
+
+
+void ApplicationConnectedTestSuite::requestAcceptOnCallRequest(common::PhoneNumber number)
+{
+    EXPECT_CALL(timerPortMock, stopTimer());
+    EXPECT_CALL(userPortMock, showTalking());
+    objectUnderTest.handleCallAccepted(number);
+}
+
+TEST_F(ApplicationConnectedTestSuite, shallHandleCallRequest)
+{
+
     using namespace std::chrono_literals;
     EXPECT_CALL(userPortMock, showNewCallRequest(NUMBER));
     EXPECT_CALL(timerPortMock, startTimer(30000ms));
@@ -151,12 +174,54 @@ void ApplicationConnectedTestSuite::testHandleCallRequest()
     objectUnderTest.handleCallRequest(NUMBER);
 }
 
-TEST_F(ApplicationConnectedTestSuite, shallHandleCallRequest)
+TEST_F(ApplicationConnectedTestSuite, shallHandleCallAccepted)
 {
-    testHandleCallRequest();
+    requestAcceptOnCallRequest(NUMBER);
 }
 
+TEST_F(ApplicationConnectedTestSuite, shallHandleCallDropped)
+{
+    EXPECT_CALL(timerPortMock, stopTimer());
+    EXPECT_CALL(userPortMock, showCallDropped());
+    EXPECT_CALL(userPortMock, setAcceptCallback(_));
+    EXPECT_CALL(userPortMock, setRejectCallback(_));
+    objectUnderTest.handleCallDropped(PHONE_NUMBER);
+}
 
+TEST_F(ApplicationConnectedTestSuite, shallHandleUnknownRecipientAfterCallRequest)
+{
+    EXPECT_CALL(timerPortMock, stopTimer());
+    EXPECT_CALL(userPortMock, showPartnerNotAvailable());
+    EXPECT_CALL(userPortMock, setAcceptCallback(_));
+    EXPECT_CALL(userPortMock, setRejectCallback(_));
+    objectUnderTest.handleUnknownRecipientAfterCallRequest();
+}
+
+struct ApplicationTalkingTestSuite : ApplicationConnectedTestSuite
+{
+    ApplicationTalkingTestSuite();
+};
+
+ApplicationTalkingTestSuite::ApplicationTalkingTestSuite()
+{
+    //preparation
+    requestAcceptOnCallRequest(PHONE_NUMBER);
+}
+
+TEST_F(ApplicationTalkingTestSuite, shallHandleUnknownRecipientAfterCallAccepted)
+{
+    EXPECT_CALL(timerPortMock, stopTimer());
+    EXPECT_CALL(userPortMock, showPartnerNotAvailable());
+    EXPECT_CALL(userPortMock, setAcceptCallback(_));
+    EXPECT_CALL(userPortMock, setRejectCallback(_));
+    objectUnderTest.handleUnknownRecipientAfterCallAccepted();
+}
+
+TEST_F(ApplicationTalkingTestSuite, shallRejectCallRequestDuringTalking)
+{
+    EXPECT_CALL(btsPortMock, sendCallDropped(PHONE_NUMBER));
+    objectUnderTest.handleCallRequest(PHONE_NUMBER);
+}
 
 
 

@@ -24,6 +24,7 @@ struct SMS
     SMS(const SMS &sms);
     SMS(SMS&& sms) noexcept;
     SMS &operator =(const SMS &sms);
+    SMS& operator=(SMS&& other) noexcept;
     bool operator==(const SMS& sms) const;
 
     std::string message;

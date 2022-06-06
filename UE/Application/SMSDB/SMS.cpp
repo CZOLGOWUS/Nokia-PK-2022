@@ -16,6 +16,16 @@ namespace ue
         :from(other.from),to(other.to),message(std::move(other.message)) ,isRead(other.isRead),smsTransmissionState(other.smsTransmissionState)
     {
     }
+    SMS& SMS::operator=(SMS&& other) noexcept
+    {
+        this->to = other.to;
+        this->from = other.from;
+        this->message = std::move(other.message);
+        this->isRead = other.isRead;
+        this->smsTransmissionState = other.smsTransmissionState;
+
+        return *this;
+    }
 
 
     SMS& SMS::operator=(const SMS& other)

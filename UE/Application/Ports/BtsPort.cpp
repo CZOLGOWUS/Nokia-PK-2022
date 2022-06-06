@@ -77,12 +77,11 @@ void BtsPort::handleMessage(BinaryMessage msg)
         }
         case common::MessageId::UnknownRecipient:
         {
-            auto failMsgId = reader.readMessageId();
-            switch (failMsgId) {
+            auto failMsgHeader = reader.readMessageHeader();
+            switch (failMsgHeader.messageId) {
                 case common::MessageId::Sms:
-                    logger.logError("unknown message: ", msgId, ", to: ",to);
-                    handler->handleSMS(from, reader.readRemainingText(),
-                                       common::MessageId::UnknownRecipient);
+                    logger.logError("unknown message: ", msgId, ", to: ",failMsgHeader.to);
+                    handler->handleSMS(from, reader.readRemainingText(), common::MessageId::UnknownRecipient);
                     break;
                 case common::MessageId::CallRequest:
                     handler->handleUnknownRecipientAfterCallRequest();
@@ -90,7 +89,15 @@ void BtsPort::handleMessage(BinaryMessage msg)
                 case common::MessageId::CallAccepted:
                     handler->handleUnknownRecipientAfterCallAccepted();
                     break;
+                default:
+                    logger.log(common::ILogger::ERROR_LEVEL,"behaviour for this message id not implemented: " + common::to_string(failMsgHeader.messageId));
+                    break;
             }
+            break;
+        }
+        case common::MessageId::UnknownSender:
+        {
+            logger.log(common::ILogger::INFO_LEVEL,"message came from an unknown Sender - msg has been discarded");
             break;
         }
         default:

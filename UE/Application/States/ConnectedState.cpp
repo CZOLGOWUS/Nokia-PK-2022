@@ -148,8 +148,13 @@ void ConnectedState::handleSMS(common::PhoneNumber from, std::string text, commo
         case common::MessageId::UnknownRecipient:
         {
             auto sms = context.smsDb.getLastSMSSend();
-            if(sms)
+            if(sms) {
                 sms.value()->smsTransmissionState = Bounce;
+                sms.value()->isRead = false;
+                context.user.showSMSNotification();
+            }
+
+            break;
         }
         default:{
             break;
@@ -167,7 +172,7 @@ void ConnectedState::handleAcceptOnDial(IUeGui::IDialMode& dial)
     auto phoneNumber = dial.getPhoneNumber();
     context.currentCallingStatus.callingNumber = phoneNumber;
     context.currentCallingStatus.isOutgoingCall = true;
-    context.user.showDialing(phoneNumber);
+    context.user.showCalling(phoneNumber);
     context.bts.sendCallRequest(phoneNumber);
     context.user.setAcceptCallback([&]{return; });
     context.user.setRejectCallback([&]{handleCallResignation();});

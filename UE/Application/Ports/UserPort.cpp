@@ -134,7 +134,7 @@ void UserPort::showSMS(SMS &&sms)
     showSMS(sms);
 }
 
-std::basic_string<char> UserPort::constructSmsSummary(SMS &sms) const
+std::basic_string<char> UserPort::constructSmsSummary(const SMS &sms) const
 {
     std::basic_string message(sms.message);
     uint8_t pos = message.find_first_of('\n');
@@ -144,7 +144,11 @@ std::basic_string<char> UserPort::constructSmsSummary(SMS &sms) const
     {
         case Bounce:
         {
-            return "SEND ERR: " + message.substr(0, pos - 10);
+            if (sms.isRead)
+                return "SEND ERR: " + message.substr(0, pos - 11);
+            else
+                return "*SEND ERR: " + message.substr(0, pos - 11);
+
         }
         case Received:
         {
@@ -201,13 +205,12 @@ void UserPort::showNewCallRequest(common::PhoneNumber from) {
 void UserPort::showTalking()
 {
     IUeGui::ICallMode& call = gui.setCallMode();
-
 }
 
-void UserPort::showDialing(common::PhoneNumber to)
+void UserPort::showCalling(common::PhoneNumber to)
 {
     IUeGui::ITextMode& dialing = gui.setAlertMode();
-    dialing.setText("Dialling to " + to_string(to) + "...");
+    dialing.setText("Calling to " + to_string(to) + "...");
 }
 
 void UserPort::showPartnerNotAvailable()
@@ -219,7 +222,7 @@ void UserPort::showPartnerNotAvailable()
 void UserPort::showCallDropped()
 {
     IUeGui::ITextMode& info = gui.setAlertMode();
-    info.setText("Call rejected");
+    info.setText("Call dropped");
 }
 
 }
