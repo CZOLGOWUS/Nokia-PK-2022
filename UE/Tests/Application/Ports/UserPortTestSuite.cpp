@@ -148,4 +148,12 @@ TEST_F(UserPortTestSuite, shallShowCallDropped)
     objectUnderTest.showCallDropped();
 }
 
+TEST_F(UserPortTestSuite, shallShowCallEnded)
+{
+EXPECT_CALL(guiMock,setAlertMode()).WillOnce(ReturnRef(alertModeMock));
+EXPECT_CALL(alertModeMock, setText(_));
+objectUnderTest.showCallEnded();
+}
+
+
 }

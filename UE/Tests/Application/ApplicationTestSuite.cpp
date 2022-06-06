@@ -160,6 +160,9 @@ void ApplicationConnectedTestSuite::requestAcceptOnCallRequest(common::PhoneNumb
 {
     EXPECT_CALL(timerPortMock, stopTimer());
     EXPECT_CALL(userPortMock, showTalking());
+    EXPECT_CALL(userPortMock, setAcceptCallback(_));
+    EXPECT_CALL(userPortMock, setRejectCallback(_));
+    EXPECT_CALL(timerPortMock, startTimer(_));
     objectUnderTest.handleCallAccepted(number);
 }
 
@@ -221,6 +224,33 @@ TEST_F(ApplicationTalkingTestSuite, shallRejectCallRequestDuringTalking)
 {
     EXPECT_CALL(btsPortMock, sendCallDropped(PHONE_NUMBER));
     objectUnderTest.handleCallRequest(PHONE_NUMBER);
+}
+
+TEST_F(ApplicationTalkingTestSuite, shallHandleUnknownRecipientAfterCallTalk)
+{
+EXPECT_CALL(timerPortMock, stopTimer());
+EXPECT_CALL(userPortMock, showPartnerNotAvailable());
+EXPECT_CALL(userPortMock, setAcceptCallback(_));
+EXPECT_CALL(userPortMock, setRejectCallback(_));
+objectUnderTest.handleUnknownRecipientAfterCallAccepted();
+}
+
+TEST_F(ApplicationTalkingTestSuite, shallHandleDroppingCall)
+{
+EXPECT_CALL(timerPortMock, stopTimer());
+EXPECT_CALL(userPortMock, showCallEnded());
+EXPECT_CALL(userPortMock, setAcceptCallback(_));
+EXPECT_CALL(userPortMock, setRejectCallback(_));
+objectUnderTest.handleCallDropped(PHONE_NUMBER);
+}
+
+TEST_F(ApplicationTalkingTestSuite, shallHandleCallTalk)
+{
+EXPECT_CALL(timerPortMock, stopTimer());
+EXPECT_CALL(userPortMock, showNewTalkMessage(PHONE_NUMBER, "msg", _));
+EXPECT_CALL(timerPortMock, startTimer(_));
+
+objectUnderTest.handleCallTalk(PHONE_NUMBER, "msg");
 }
 
 

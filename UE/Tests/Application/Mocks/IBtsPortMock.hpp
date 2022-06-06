@@ -21,9 +21,10 @@ public:
     MOCK_METHOD(void, handleCallRequest, (common::PhoneNumber from), (final));
     MOCK_METHOD(void, handleCallAccepted, (common::PhoneNumber from), (final));
     MOCK_METHOD(void, handleCallDropped, (common::PhoneNumber from), (final));
+    MOCK_METHOD(void, handleCallTalk, (common::PhoneNumber from, std::string msg), (final));
     MOCK_METHOD(void, handleUnknownRecipientAfterCallRequest, (), (final));
     MOCK_METHOD(void, handleUnknownRecipientAfterCallAccepted, (), (final));
-
+    MOCK_METHOD(void, handleUnknownRecipientAfterCallTalk, (), (final));
 };
 
 class IBtsPortMock : public IBtsPort
@@ -37,6 +38,7 @@ public:
     MOCK_METHOD(void, sendCallAccepted, (common::PhoneNumber to), (final));
     MOCK_METHOD(void, sendCallDropped, (common::PhoneNumber to), (final));
     MOCK_METHOD(void, sendCallRequest, (common::PhoneNumber to), (final));
+    MOCK_METHOD(void, sendCallTalk, (common::PhoneNumber, std::string), (final));
 
     MOCK_METHOD(void, sendSMS, (common::PhoneNumber, std::string), (final));
 };

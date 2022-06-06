@@ -38,10 +38,13 @@ public:
     MOCK_METHOD(void, showCalling, (common::PhoneNumber), (final));
     MOCK_METHOD(void, showPartnerNotAvailable, (), (final));
     MOCK_METHOD(void, showCallDropped, (), (final));
+    MOCK_METHOD(void, showCallEnded, (), (final));
+    MOCK_METHOD(void, showNewTalkMessage, (common::PhoneNumber, std::string, bool ), (final));
     MOCK_METHOD(IUeGui::ISmsComposeMode&,initSmsComposer,(),(final));
     MOCK_METHOD(IUeGui::IListViewMode&,initListViewMode,(),(final));
     MOCK_METHOD(IUeGui::ITextMode&,initTextMode,(),(final));
     MOCK_METHOD(IUeGui::IDialMode&,initDialMode,(),(final));
+    MOCK_METHOD(IUeGui::ICallMode&,initCallMode,(),(final));
     MOCK_METHOD(void,setAcceptCallback,(const IUeGui::Callback& callback),(final));
     MOCK_METHOD(void,setRejectCallback,(const IUeGui::Callback& callback),(final));
     MOCK_METHOD(void,setHomeCallback,(const IUeGui::Callback& callback),(final));
