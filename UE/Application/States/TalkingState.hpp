@@ -12,7 +12,12 @@ private:
 public:
     void handleCallRequest(common::PhoneNumber from) override;
     void handleUnknownRecipientAfterCallAccepted() override;
+    void handleUnknownRecipientAfterCallTalk() override;
     void handleCallDropped(common::PhoneNumber) override;
+    void handleCallTalk(common::PhoneNumber from, std::string msg) override;
+    void handleAcceptOnTalk();
+    void handleTimeout() override;
+
     TalkingState(Context& context);
 
 };
