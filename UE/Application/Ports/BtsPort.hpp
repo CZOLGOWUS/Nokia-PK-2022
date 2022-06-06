@@ -20,6 +20,7 @@ public:
     void sendCallAccepted(common::PhoneNumber) override;
     void sendCallDropped(common::PhoneNumber) override;
     void sendCallRequest(common::PhoneNumber) override;
+    void sendCallTalk(common::PhoneNumber, std::string) override;
 
     void sendSMS(common::PhoneNumber to, std::string msg) override;
 

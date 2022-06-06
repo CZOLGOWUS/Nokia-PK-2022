@@ -70,6 +70,16 @@ void BaseState::handleUnknownRecipientAfterCallAccepted()
     logger.logInfo("Uexpected: handleUnknownRecipientAfterCallAccepted");
 }
 
+void BaseState::handleUnknownRecipientAfterCallTalk()
+{
+    logger.logInfo("Uexpected: handleUnknownRecipientAfterCallTalk");
+}
+
+void BaseState::handleCallTalk(common::PhoneNumber from, std::string msg)
+{
+    logger.logInfo("Uexpected: handleCallTalk");
+}
+
 
 
 }

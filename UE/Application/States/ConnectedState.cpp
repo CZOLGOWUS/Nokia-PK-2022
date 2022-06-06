@@ -59,7 +59,7 @@ void ConnectedState::handleDisconnected()
 
 void ConnectedState::handleTimeout()
 {
-    context.bts.sendCallDropped(context.currentCallingStatus.callingNumber);
+
     context.currentCallingStatus.callingNumber.value = 0;
     context.currentCallingStatus.isOutgoingCall = false;
     handleMainMenu();
@@ -202,7 +202,6 @@ void ConnectedState::handleCallRequest(common::PhoneNumber from)
 void ConnectedState::handleCallAccepted(common::PhoneNumber)
 {
     context.timer.stopTimer();
-
     context.user.showTalking();
     context.setState<TalkingState>();
 }

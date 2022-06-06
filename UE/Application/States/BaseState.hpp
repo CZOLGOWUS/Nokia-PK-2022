@@ -25,8 +25,10 @@ public:
     void handleCallRequest(common::PhoneNumber) override;
     void handleCallAccepted(common::PhoneNumber) override;
     void handleCallDropped(common::PhoneNumber) override;
+    void handleCallTalk(common::PhoneNumber from, std::string msg) override;
     void handleUnknownRecipientAfterCallRequest() override;
     void handleUnknownRecipientAfterCallAccepted() override;
+    void handleUnknownRecipientAfterCallTalk() override;
 
 protected:
     Context& context;

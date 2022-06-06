@@ -78,4 +78,14 @@ void Application::handleUnknownRecipientAfterCallAccepted()
     context.state->handleUnknownRecipientAfterCallAccepted();
 }
 
+void Application::handleUnknownRecipientAfterCallTalk()
+{
+    context.state->handleUnknownRecipientAfterCallTalk();
+}
+
+void Application::handleCallTalk(common::PhoneNumber from, std::string msg)
+{
+    context.state->handleCallTalk(from, msg);
+}
+
 }

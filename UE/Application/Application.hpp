@@ -37,6 +37,8 @@ public:
     void handleCallDropped(common::PhoneNumber from) override;
     void handleUnknownRecipientAfterCallRequest() override;
     void handleUnknownRecipientAfterCallAccepted() override;
+    void handleUnknownRecipientAfterCallTalk() override;
+    void handleCallTalk(common::PhoneNumber from, std::string msg) override;
 
 private:
     Context context;

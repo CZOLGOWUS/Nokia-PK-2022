@@ -73,6 +73,7 @@ void BtsPort::handleMessage(BinaryMessage msg)
         }
         case common::MessageId::CallTalk:
         {
+            handler->handleCallTalk(from,reader.readRemainingText());
             break;
         }
         case common::MessageId::UnknownRecipient:
@@ -88,6 +89,9 @@ void BtsPort::handleMessage(BinaryMessage msg)
                     break;
                 case common::MessageId::CallAccepted:
                     handler->handleUnknownRecipientAfterCallAccepted();
+                    break;
+                case common::MessageId::CallTalk:
+                    handler->handleUnknownRecipientAfterCallTalk();
                     break;
                 default:
                     logger.log(common::ILogger::ERROR_LEVEL,"behaviour for this message id not implemented: " + common::to_string(failMsgHeader.messageId));
@@ -152,6 +156,15 @@ void BtsPort::sendSMS(common::PhoneNumber to, std::string msg)
 {
     auto outgoingMsg = common::OutgoingMessage(common::MessageId::Sms,phoneNumber,to);
     outgoingMsg.writeText(msg);
+    transport.sendMessage(outgoingMsg.getMessage());
+}
+
+void BtsPort::sendCallTalk(common::PhoneNumber to , std::string message)
+{
+    common::OutgoingMessage outgoingMsg{common::MessageId::CallTalk,
+                                phoneNumber,
+                                to};
+    outgoingMsg.writeText(message);
     transport.sendMessage(outgoingMsg.getMessage());
 }
 

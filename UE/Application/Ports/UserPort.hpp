@@ -36,6 +36,7 @@ public:
     IUeGui::IListViewMode& initListViewMode() override;
     IUeGui::ITextMode& initTextMode() override;
     IUeGui::IDialMode& initDialMode() override;
+    IUeGui::ICallMode& initCallMode() override;
 
     void setAcceptCallback(const IUeGui::Callback& callback) override;
     void setRejectCallback(const IUeGui::Callback& callback) override;
@@ -50,6 +51,8 @@ public:
     void showCalling(common::PhoneNumber to) override;
     void showPartnerNotAvailable() override;
     void showCallDropped() override;
+    void showCallEnded() override;
+    void showNewTalkMessage(common::PhoneNumber from, std::string msg, bool isOutgoing) override;
 
 private:
     common::PrefixedLogger logger;

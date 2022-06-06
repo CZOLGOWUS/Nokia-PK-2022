@@ -47,6 +47,7 @@ public:
     virtual IUeGui::IListViewMode& initListViewMode() = 0;
     virtual IUeGui::ITextMode& initTextMode() = 0;
     virtual IUeGui::IDialMode& initDialMode() = 0;
+    virtual IUeGui::ICallMode& initCallMode() = 0;
 
     virtual void setAcceptCallback(const IUeGui::Callback& callback) = 0;
     virtual void setRejectCallback(const IUeGui::Callback& callback) = 0;
@@ -61,6 +62,8 @@ public:
     virtual void showCalling(common::PhoneNumber to) = 0;
     virtual void showPartnerNotAvailable() = 0;
     virtual void showCallDropped() = 0;
+    virtual void showCallEnded() = 0;
+    virtual void showNewTalkMessage(common::PhoneNumber from, std::string msg, bool isOutgoing) = 0;
 
 };
 

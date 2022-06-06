@@ -1,6 +1,7 @@
 #include "UserPort.hpp"
 #include "UeGui/IListViewMode.hpp"
 #include "UeGui/ITextMode.hpp"
+#include "UeGui/ICallMode.hpp"
 
 namespace ue
 {
@@ -58,6 +59,11 @@ IUeGui::ITextMode& UserPort::initTextMode()
 IUeGui::IDialMode& UserPort::initDialMode()
 {
     return gui.setDialMode();
+}
+
+IUeGui::ICallMode& UserPort::initCallMode()
+{
+    return gui.setCallMode();
 }
 
 
@@ -225,4 +231,16 @@ void UserPort::showCallDropped()
     info.setText("Call dropped");
 }
 
+void UserPort::showCallEnded()
+{
+    IUeGui::ITextMode& info = gui.setAlertMode();
+    info.setText("Call ended");
+}
+
+void UserPort::showNewTalkMessage(common::PhoneNumber from, std::string msg, bool isOutgoing)
+{
+    IUeGui::ICallMode& call = gui.setCallMode();
+    if(isOutgoing) call.appendIncomingText("[Me]: " + msg);
+    else call.appendIncomingText("[" +to_string(from) + "]: " + msg);
+}
 }
