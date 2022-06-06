@@ -2,6 +2,8 @@
 
 #include "ITimerPort.hpp"
 #include "Logger/PrefixedLogger.hpp"
+#include "thread"
+#include "atomic"
 
 namespace ue
 {
@@ -18,7 +20,12 @@ public:
     void startTimer(Duration duration) override;
     void stopTimer() override;
 
+
+
 private:
+    void timerRun(std::chrono::duration<double> timerDuration);
+    std::thread timerThread;
+    std::atomic<bool> timerRunning {false};
     common::PrefixedLogger logger;
     ITimerEventsHandler* handler = nullptr;
 };
