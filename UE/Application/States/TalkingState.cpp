@@ -20,6 +20,15 @@ namespace ue
         context.bts.sendCallDropped(from);
     }
 
+    void TalkingState::handleCallDropped(common::PhoneNumber from,common::PhoneNumber to)
+    {
+        context.bts.sendCallDropped(to);
+        context.currentCallingStatus.callingNumber.value = 0;
+        context.currentCallingStatus.isOutgoingCall = false;
+        context.setState<ConnectedState>();
+
+    }
+
     void TalkingState::handleCallEnded()
     {
         context.currentCallingStatus.callingNumber.value = 0;

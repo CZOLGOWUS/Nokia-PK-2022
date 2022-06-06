@@ -11,6 +11,7 @@ private:
 public:
     void handleCallRequest(common::PhoneNumber from) override;
     void handleUnknownRecipientAfterCallAccepted() override;
+    void handleCallDropped(common::PhoneNumber from, common::PhoneNumber to);
     TalkingState(Context& context);
 
 };
