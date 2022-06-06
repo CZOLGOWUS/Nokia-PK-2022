@@ -1,6 +1,4 @@
 #include "TimerPort.hpp"
-#include <thread>
-
 
 namespace ue
 {

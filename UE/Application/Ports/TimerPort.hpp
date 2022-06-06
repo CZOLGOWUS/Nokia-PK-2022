@@ -29,5 +29,4 @@ private:
     common::PrefixedLogger logger;
     ITimerEventsHandler* handler = nullptr;
 };
-
 }
